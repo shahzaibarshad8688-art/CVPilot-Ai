@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CVPilot AI — Find What’s Holding Your CV Back</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+:root{--bg:#080B12;--s:#111621;--e:#171D29;--a:#FF704F;--a2:#FF9B55;--t:#F7F7FA;--m:#A8AFBD;--b:rgba(255,255,255,.09);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*:before,*:after{box-sizing:border-box}html{scroll-padding-top:70px;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--t);font:16px/1.6 Inter,Manrope,system-ui,sans-serif;overflow-x:hidden;background-image:radial-gradient(600px 400px at 85% -5%,rgba(255,112,79,.18),transparent),radial-gradient(500px 400px at -5% 30%,rgba(60,80,160,.18),transparent)}
+a{color:inherit}h1,h2,h3{line-height:1.15;margin:0 0 .5em}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(8,11,18,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--b)}
+.w{max-width:1120px;margin:auto;padding:0 20px}.nb{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font-weight:800;font-size:20px;text-decoration:none}.logo b{color:var(--a)}
+.links{display:flex;gap:6px;align-items:center}.links a{padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--m);font-size:15px}.links a:hover,.links a.on{color:var(--t);background:var(--e)}
+#mb{display:none;background:var(--e);border:1px solid var(--b);color:var(--t);border-radius:8px;min-height:44px;min-width:44px;font-size:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:10px;border:1px solid var(--b);background:var(--e);color:var(--t);font:600 15px inherit;cursor:pointer;text-decoration:none}
+.btn.p{background:linear-gradient(135deg,var(--a),var(--a2));border:0;color:#1a0b06}.btn:hover{filter:brightness(1.1)}.btn.sm{min-height:36px;padding:0 12px;font-size:13px}
+:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+.view{display:none;padding:40px 0 60px;animation:in .5s ease}.view.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.badge{display:inline-block;font-size:12px;letter-spacing:.12em;color:var(--a2);border:1px solid rgba(255,155,85,.4);padding:4px 12px;border-radius:99px;margin-bottom:16px}
+h1{font-size:clamp(34px,6vw,58px);font-weight:800}.g{background:linear-gradient(135deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}.hero p{color:var(--m);font-size:18px}.row{display:flex;gap:12px;flex-wrap:wrap}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--b);border-radius:18px;padding:22px;transition:transform .2s,border-color .2s}.card:hover{border-color:rgba(255,112,79,.4)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.ring{width:130px;height:130px;position:relative;margin:0 auto 14px}.ring svg{transform:rotate(-90deg)}.ring span{position:absolute;inset:0;display:grid;place-items:center;font-size:32px;font-weight:800}
+.bar{height:8px;background:var(--e);border-radius:9px;overflow:hidden;margin:4px 0 12px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--a2));border-radius:9px;transition:width 1s}
+.small{font-size:13px;color:var(--m)}.demo{font-size:11px;color:var(--a2);text-align:center}
+section.blk{padding:50px 0}h2{font-size:clamp(26px,4vw,38px)}
+.num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--a2));color:#1a0b06;display:grid;place-items:center;font-weight:800;margin-bottom:10px}
+details{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:14px 18px;margin-bottom:10px}summary{cursor:pointer;font-weight:600}
+footer{border-top:1px solid var(--b);padding:30px 0;color:var(--m);font-size:14px}footer .row{justify-content:space-between}
+label{display:block;font-size:13px;color:var(--m);margin:10px 0 4px}
+input,textarea,select{width:100%;background:var(--s);border:1px solid var(--b);color:var(--t);border-radius:10px;padding:10px 12px;font:inherit;min-height:44px}textarea{min-height:80px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.build{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.tabs{display:none;gap:8px;margin-bottom:14px}.tabs .btn.on{border-color:var(--a)}
+.item{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:12px;margin:10px 0}
+#cvwrap{background:#fff;border-radius:10px;overflow:auto;max-width:100%}
+#cv{background:#fff;color:#1b1f2a;padding:34px 38px;min-height:520px;width:100%;line-height:1.45}
+#cv h1{font-size:2em;margin:0;color:var(--ac);font-weight:800}#cv .ti{color:#555;margin-bottom:4px}#cv .ct{font-size:.85em;color:#444}
+#cv h3{font-size:.95em;text-transform:uppercase;letter-spacing:.08em;color:var(--ac);border-bottom:1.5px solid var(--ac);padding-bottom:2px;margin:16px 0 6px}
+#cv ul{margin:3px 0 6px;padding-left:18px}#cv .h{display:flex;justify-content:space-between;gap:8px;font-weight:700}#cv .h span:last-child{font-weight:400;color:#555;font-size:.9em}
+#cv.modern{border-top:12px solid var(--ac)}#cv.modern h1{font-size:2.3em}#cv.exec{font-family:Georgia,serif;text-align:left}#cv.exec h1{text-align:center;letter-spacing:.06em;color:#111;border-bottom:3px double var(--ac);padding-bottom:6px}#cv.exec .ti,#cv.exec .ct{text-align:center}#cv.exec h3{color:#111;border-bottom:1px solid #999}
+#cv.classic h1{color:#111}#cv.classic h3{color:#111;border-color:#111}
+.res{margin-top:20px}.sev{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px}.Critical{background:#5a1d1d;color:#ffb4b4}.Moderate{background:#5a4210;color:#ffd98a}.Minor{background:#1c3a52;color:#a9d6ff}
+.drop{border:2px dashed var(--b);border-radius:16px;padding:30px;text-align:center;cursor:pointer}.drop.hv{border-color:var(--a)}
+pre{white-space:pre-wrap;background:var(--s);padding:12px;border-radius:10px;max-height:200px;overflow:auto;font-size:13px}
+.note{background:rgba(255,155,85,.08);border:1px solid rgba(255,155,85,.3);border-radius:12px;padding:12px 14px;font-size:14px;color:#ffd9b8}
+.err{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.4);border-radius:12px;padding:12px 14px}
+.spin{width:22px;height:22px;border:3px solid var(--e);border-top-color:var(--a);border-radius:50%;animation:r .8s linear infinite;display:inline-block;vertical-align:middle}@keyframes r{to{transform:rotate(360deg)}}
+.pill{display:inline-block;background:var(--e);border-radius:99px;padding:2px 10px;margin:2px;font-size:13px}.pill.ok{background:#16382a}.pill.no{background:#3a1d1d}
+@media(max-width:860px){.hero,.build{grid-template-columns:1fr}.links{display:none;position:absolute;top:62px;left:0;right:0;flex-direction:column;background:var(--bg);padding:12px;border-bottom:1px solid var(--b);align-items:stretch}.links.open{display:flex}#mb{display:block}.tabs{display:flex}.build.pv #formcol,.build:not(.pv) #pvcol{display:none}#cv{padding:20px}.two{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{@page{margin:12mm}body,html{background:#fff!important}body>*:not(main),main>*:not(#v-build),#v-build .build>*:not(#pvcol),#pvcol>*:not(#cvwrap),.tabs,nav,footer{display:none!important}#v-build,#v-build .w,.build,#pvcol,#cvwrap{display:block!important;padding:0!important;margin:0!important;max-width:none!important}#cv{padding:0!important;min-height:0}.view{display:none}#v-build{display:block!important}}
+</style></head><body>
+<nav><div class="w nb"><a class="logo" href="#home">CVPilot <b>AI</b></a>
+<button id="mb" aria-label="Toggle menu" aria-expanded="false">☰</button>
+<div class="links" id="lk"><a href="#home">Home</a><a href="#build">Build CV</a><a href="#guide">CV Guide</a><a href="#review">AI Review</a><a class="btn p sm" href="#build">Start Building</a></div></div></nav>
+<main>
+<!-- HOME -->
+<div class="view" id="v-home"><div class="w">
+<div class="hero"><div><span class="badge">AI POWERED CV REVIEW</span>
+<h1>Find What’s <span class="g">Holding Your CV Back.</span></h1>
+<p>Build a professional CV, discover weaknesses, and improve your resume with intelligent, evidence-based feedback before applying for your next opportunity.</p>
+<div class="row"><a class="btn p" href="#build">Build My CV</a><a class="btn" href="#review">Start AI Review</a></div></div>
+<div class="card"><div class="ring"><svg width="130" height="130"><circle cx="65" cy="65" r="56" fill="none" stroke="#171D29" stroke-width="12"/><circle id="hr" cx="65" cy="65" r="56" fill="none" stroke="url(#gr)" stroke-width="12" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" style="transition:stroke-dashoffset 1.4s"/><defs><linearGradient id="gr"><stop offset="0" stop-color="#FF704F"/><stop offset="1" stop-color="#FF9B55"/></linearGradient></defs></svg><span id="hs">0</span></div>
+<div class="demo">ILLUSTRATIVE DEMO DATA — not a real assessment</div><br>
+<div class="small">Structure · 16/20</div><div class="bar"><i data-w="80"></i></div>
+<div class="small">Experience · 17/25</div><div class="bar"><i data-w="68"></i></div>
+<div class="small">Skills · 14/20</div><div class="bar"><i data-w="70"></i></div>
+<div class="two"><div class="small">Suggestions: <b>9</b> (demo)</div><div class="small">Issues found: <b>4</b> (demo)</div></div></div></div>
+<section class="blk"><h2>How it works</h2><div class="grid">
+<div class="card"><div class="num">1</div><h3>Build or upload</h3><p class="small">Create a CV step by step, or upload a PDF, DOCX or TXT.</p></div>
+<div class="card"><div class="num">2</div><h3>Get explainable feedback</h3><p class="small">A 100‑point rubric shows evidence, gaps and fixes per category.</p></div>
+<div class="card"><div class="num">3</div><h3>Export as PDF</h3><p class="small">Pick a template and save a clean, ATS‑friendly PDF.</p></div></div></section>
+<section class="blk"><h2>Built for real use</h2><div class="grid">
+<div class="card"><h3>Build your CV</h3><p class="small">Multiple experiences and education records, reordering, optional sections, live preview.</p></div>
+<div class="card"><h3>AI CV review</h3><p class="small">Runs locally in your browser with transparent rule‑based checks. Nothing is uploaded.</p></div>
+<div class="card"><h3>ATS‑friendly templates</h3><p class="small">ATS Classic, Modern Professional and Executive, with accent colours and font size.</p></div>
+<div class="card"><h3>Job matching</h3><p class="small">Paste a job description to see keywords present and absent in your CV.</p></div></div></section>
+<section class="blk"><h2>FAQ</h2>
+<details><summary>Is my CV uploaded anywhere?</summary><p class="small">No. Parsing, scoring and drafts stay in your browser. Drafts live in local storage until you reset them.</p></details>
+<details><summary>Is this real AI?</summary><p class="small">No. This public page has no model connected; it uses a clearly labelled rule‑based analysis. Generative rewriting needs a secure backend holding an API key, which cannot safely live in a public static page.</p></details>
+<details><summary>Is the score an official ATS score?</summary><p class="small">No. It is an advisory estimate from the text found in your CV and does not predict hiring outcomes.</p></details>
+<details><summary>How do I get a PDF?</summary><p class="small">Use Download PDF in the builder and choose “Save as PDF” in the print dialog.</p></details></section>
+<section class="blk card" style="text-align:center"><h2>Ready to improve your CV?</h2><div class="row" style="justify-content:center"><a class="btn p" href="#build">Build My CV</a><a class="btn" href="#review">Review a CV</a></div></section>
+</div></div>
+<!-- BUILD -->
+<div class="view" id="v-build"><div class="w">
+<h2>Build your CV</h2>
+<div class="row" style="margin-bottom:14px"><button class="btn p" id="pdf">Download PDF</button><button class="btn" id="prt">Print CV</button><button class="btn" id="exj">Export JSON</button><label class="btn" style="margin:0;cursor:pointer">Import JSON<input id="imj" type="file" accept=".json" hidden></label><button class="btn" id="rst">Delete &amp; reset</button></div>
+<div class="tabs"><button class="btn on" data-t="f">Edit</button><button class="btn" data-t="p">Preview</button></div>
+<div class="build" id="bld"><div id="formcol">
+<div class="card"><h3>1. Personal information</h3><div class="two" id="pf"></div><label for="p.summary">Professional summary (optional)</label><textarea id="p.summary" data-k="p.summary"></textarea></div><br>
+<div class="card"><h3>2. Work experience</h3><div id="exl"></div><button class="btn sm" id="adx">+ Add experience</button></div><br>
+<div class="card"><h3>3. Education</h3><div id="edl"></div><button class="btn sm" id="ade">+ Add education</button></div><br>
+<div class="card"><h3>4. Skills</h3><label for="sk">Comma‑separated technical and soft skills</label><textarea id="sk" data-k="skills"></textarea></div><br>
+<div class="card"><h3>5. Additional sections</h3><p class="small">Leave empty to hide a section. One item per line.</p>
+<label for="pj">Projects</label><textarea id="pj" data-k="proj"></textarea><label for="ce">Certifications</label><textarea id="ce" data-k="cert"></textarea><label for="la">Languages</label><textarea id="la" data-k="lang"></textarea></div><br>
+<div class="card"><h3>6. Template &amp; style</h3><div class="two"><div><label for="tp">Template</label><select id="tp" data-k="tpl"><option value="classic">ATS Classic</option><option value="modern">Modern Professional</option><option value="exec">Executive</option></select></div>
+<div><label for="co">Accent colour</label><input type="color" id="co" data-k="color"></div></div><label for="fs">Font size (<span id="fsv"></span>pt)</label><input type="range" id="fs" data-k="fs" min="9" max="13" step=".5"></div></div>
+<div id="pvcol"><div id="cvwrap"><div id="cv"></div></div><p class="small">Autosaved in this browser. Long CVs flow onto multiple pages when printed.</p></div></div>
+</div></div>
+<!-- GUIDE -->
+<div class="view" id="v-guide"><div class="w"><h2>CV writing guide</h2><div class="grid">
+<div class="card"><h3>Professional summary</h3><p class="small">Two to four lines: who you are, your strongest relevant skills, what you want next.</p></div>
+<div class="card"><h3>Work experience</h3><p class="small">Lead with action verbs. Show what changed because of you, not just your duties.</p></div>
+<div class="card"><h3>Measurable achievements</h3><p class="small">Add numbers you can verify: percentages, volumes, time saved, team size.</p></div>
+<div class="card"><h3>Format choice</h3><p class="small">Reverse‑chronological, single‑column layouts are the safest for most roles.</p></div>
+<div class="card"><h3>ATS readability</h3><p class="small">Standard headings, real text rather than images, no tables for core content.</p></div>
+<div class="card"><h3>Tailoring</h3><p class="small">Mirror terms from the job post only for skills you genuinely have.</p></div>
+<div class="card"><h3>Common mistakes</h3><p class="small">Typos, vague claims, missing contact details, inconsistent dates, multi‑page padding.</p></div>
+<div class="card"><h3>Entry‑level &amp; students</h3><p class="small">Lead with education, projects, internships, volunteering and coursework. Show initiative.</p></div></div>
+<br><a class="btn p" href="#build">Start building</a> <a class="btn" href="#review">Review my CV</a></div></div>
+<!-- REVIEW -->
+<div class="view" id="v-review"><div class="w" style="max-width:860px"><h2>CV review</h2>
+<div class="note">Local rule‑based analysis. It runs entirely in your browser and no CV content is sent anywhere. Rewriting actions that need a language model are not available on this static page.</div><br>
+<div class="drop" id="dz" tabindex="0" role="button" aria-label="Upload CV"><b>Drop your CV here</b><br><span class="small">or click to choose · PDF, DOCX, TXT · max 5 MB</span><input id="fi" type="file" accept=".pdf,.docx,.txt" hidden></div>
+<div class="row" style="margin-top:10px"><button class="btn" id="useb">Use my built CV instead</button></div>
+<label for="jd">Target job description (optional)</label><textarea id="jd" placeholder="Paste a job description to check keyword alignment"></textarea>
+<div id="ext"></div><div id="out"></div></div></div>
+</main>
+<footer><div class="w"><div class="row"><span>© 2026 CVPilot AI · Designed &amp; developed by <b>SHAHZAIB ARSHAD KHAGGA</b></span><span><a href="#" data-m="Privacy: everything stays in your browser. Drafts are saved in local storage until you reset them.">Privacy</a> · <a href="#" data-m="Terms: advisory feedback only; no guarantee of interviews or ATS outcomes.">Terms</a> · <a href="#" data-m="Contact: add your own contact link here.">Contact</a></span></div></div></footer>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='cvpilot_v1',blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',li:'',web:'',summary:''},exp:[],edu:[],skills:'',proj:'',cert:'',lang:'',tpl:'classic',color:'#FF704F',fs:11});
+let S;try{S=Object.assign(blank(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=blank()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+/* nav */
+function route(){const h=(location.hash||'#home').slice(1),v=['home','build','guide','review'].includes(h)?h:'home';
+document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));document.querySelectorAll('.links a:not(.btn)').forEach(a=>a.classList.toggle('on',a.hash==='#'+v));
+$('#lk').classList.remove('open');$('#mb').setAttribute('aria-expanded','false');window.scrollTo(0,0);if(v==='home')anim()}
+function anim(){const s=62;setTimeout(()=>{$('#hr').style.strokeDashoffset=352*(1-s/100);let n=0;const t=setInterval(()=>{$('#hs').textContent=++n;if(n>=s)clearInterval(t)},18);document.querySelectorAll('.bar i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%')},100)}
+addEventListener('hashchange',route);$('#mb').onclick=()=>{const o=$('#lk').classList.toggle('open');$('#mb').setAttribute('aria-expanded',o)};
+document.querySelectorAll('footer a').forEach(a=>a.onclick=e=>{e.preventDefault();alert(a.dataset.m)});
+/* builder form */
+const PF=[['name','Full name'],['title','Professional title'],['email','Email'],['phone','Phone'],['loc','City, country'],['li','LinkedIn URL'],['web','Portfolio URL']];
+$('#pf').innerHTML=PF.map(([k,l])=>`<div><label for="p.${k}">${l}</label><input id="p.${k}" data-k="p.${k}" ${k==='email'?'type="email"':''}></div>`).join('');
+const get=k=>k.split('.').reduce((o,x)=>o[x],S),set=(k,v)=>{const a=k.split('.');let o=S;while(a.length>1)o=o[a.shift()];o[a[0]]=v};
+function sync(){document.querySelectorAll('[data-k]').forEach(e=>e.value=get(e.dataset.k));$('#fsv').textContent=S.fs}
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){set(k,k==='fs'?+e.target.value:e.target.value);if(k==='fs')$('#fsv').textContent=S.fs;draw()}
+const l=e.target.dataset&&e.target.dataset.l;if(l){S[l][+e.target.dataset.i][e.target.dataset.f]=e.target.value;draw()}});
+const XF=[['t','Job title'],['c','Company'],['l','Location'],['s','Start date'],['e','End date or Present']],EF=[['d','Degree / qualification'],['i','Institution'],['f','Field of study'],['s','Start'],['e','End'],['g','Grades / achievements']];
+function lists(){$('#exl').innerHTML=S.exp.map((x,i)=>`<div class="item"><div class="two">${XF.map(([f,l])=>`<div><label>${l}<input data-l="exp" data-i="${i}" data-f="${f}" value="${esc(x[f])}"></label></div>`).join('')}</div><label>Responsibilities &amp; achievements (one per line, include measurable results you can verify)<textarea data-l="exp" data-i="${i}" data-f="d">${esc(x.d)}</textarea></label><div class="row"><button class="btn sm" data-a="up" data-l="exp" data-i="${i}">↑ Up</button><button class="btn sm" data-a="dn" data-l="exp" data-i="${i}">↓ Down</button><button class="btn sm" data-a="rm" data-l="exp" data-i="${i}">Remove</button></div></div>`).join('');
+$('#edl').innerHTML=S.edu.map((x,i)=>`<div class="item"><div class="two">${EF.map(([f,l])=>`<div><label>${l}<input data-l="edu" data-i="${i}" data-f="${f}" value="${esc(x[f])}"></label></div>`).join('')}</div><div class="row" style="margin-top:8px"><button class="btn sm" data-a="rm" data-l="edu" data-i="${i}">Remove</button></div></div>`).join('')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const L=S[b.dataset.l],i=+b.dataset.i,a=b.dataset.a;
+if(a==='rm')L.splice(i,1);else if(a==='up'&&i>0)[L[i-1],L[i]]=[L[i],L[i-1]];else if(a==='dn'&&i<L.length-1)[L[i+1],L[i]]=[L[i],L[i+1]];lists();draw()});
+$('#adx').onclick=()=>{S.exp.push({t:'',c:'',l:'',s:'',e:'',d:''});lists();draw()};$('#ade').onclick=()=>{S.edu.push({d:'',i:'',f:'',s:'',e:'',g:''});lists();draw()};
+const lines=t=>String(t||'').split('\n').map(s=>s.trim()).filter(Boolean),ul=t=>lines(t).length?'<ul>'+lines(t).map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'';
+function draw(){const p=S.p,c=$('#cv');c.className=S.tpl;c.style.setProperty('--ac',S.color);c.style.fontSize=S.fs+'pt';
+const ct=[p.email,p.phone,p.loc,p.li,p.web].filter(Boolean).map(esc).join(' · ');
+let h=`<h1>${esc(p.name)||'Your Name'}</h1><div class="ti">${esc(p.title)}</div><div class="ct">${ct}</div>`;
+if(p.summary.trim())h+=`<h3>Summary</h3><div>${esc(p.summary)}</div>`;
+if(S.exp.length)h+='<h3>Experience</h3>'+S.exp.map(x=>`<div class="h"><span>${esc(x.t)}${x.c?' — '+esc(x.c):''}${x.l?', '+esc(x.l):''}</span><span>${esc(x.s)}${x.s||x.e?' – ':''}${esc(x.e)}</span></div>${ul(x.d)}`).join('');
+if(S.edu.length)h+='<h3>Education</h3>'+S.edu.map(x=>`<div class="h"><span>${esc(x.d)}${x.f?', '+esc(x.f):''}${x.i?' — '+esc(x.i):''}</span><span>${esc(x.s)}${x.s||x.e?' – ':''}${esc(x.e)}</span></div>${x.g?`<div>${esc(x.g)}</div>`:''}`).join('');
+if(S.skills.trim())h+=`<h3>Skills</h3><div>${esc(S.skills)}</div>`;
+[['proj','Projects'],['cert','Certifications'],['lang','Languages']].forEach(([k,l])=>{if(lines(S[k]).length)h+=`<h3>${l}</h3>${ul(S[k])}`});
+c.innerHTML=h;save()}
+document.querySelectorAll('.tabs .btn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs .btn').forEach(x=>x.classList.toggle('on',x===b));$('#bld').classList.toggle('pv',b.dataset.t==='p')});
+const doPrint=()=>{if(!S.p.name.trim()){alert('Add your name first so the PDF contains your details.');return}$('#bld').classList.add('pv');window.print()};
+$('#pdf').onclick=()=>{alert('In the print dialog choose “Save as PDF” as the destination.');doPrint()};$('#prt').onclick=doPrint;
+$('#exj').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='cvpilot-backup.json';a.click()};
+$('#imj').onchange=async e=>{try{const j=JSON.parse(await e.target.files[0].text());if(!j.p||!Array.isArray(j.exp))throw 0;S=Object.assign(blank(),j);sync();lists();draw()}catch(x){alert('That file is not a valid CVPilot backup.')}};
+$('#rst').onclick=()=>{if(confirm('Delete your saved draft and reset the builder?')){S=blank();try{localStorage.removeItem(KEY)}catch(e){}sync();lists();draw()}};
+/* review */
+const MAX=5*1024*1024;let CV='';
+const dz=$('#dz'),fi=$('#fi');dz.onclick=()=>fi.click();dz.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fi.click()}};
+['dragover','dragenter'].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.add('hv')}));['dragleave','drop'].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.remove('hv')}));
+dz.addEventListener('drop',e=>handle(e.dataTransfer.files[0]));fi.onchange=()=>handle(fi.files[0]);
+const fail=m=>{$('#out').innerHTML=`<div class="err res" role="alert">${esc(m)}</div>`};
+async function handle(f){if(!f)return;$('#ext').innerHTML='';$('#out').innerHTML='<p class="res"><span class="spin"></span> Reading file…</p>';
+const ext=(f.name.split('.').pop()||'').toLowerCase();if(!['pdf','docx','txt'].includes(ext))return fail('Unsupported file type. Please upload a PDF, DOCX or TXT file.');
+if(f.size>MAX)return fail('File is larger than 5 MB.');if(!f.size)return fail('The file is empty.');
+try{let t='';if(ext==='txt')t=await f.text();
+else if(ext==='docx'){if(!window.mammoth)throw new Error('DOCX parser failed to load.');t=(await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()})).value}
+else{if(!window.pdfjsLib)throw new Error('PDF parser failed to load.');pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;for(let i=1;i<=d.numPages;i++){const pg=await d.getPage(i),c=await pg.getTextContent();t+=c.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('')+'\n'}}
+if(t.replace(/\s/g,'').length<80)return fail(ext==='pdf'?'No usable text was found. This PDF may be scanned or image‑based. OCR is not available here; export a text‑based PDF or upload DOCX/TXT.':'Too little text was extracted to review.');
+CV=t;show()}catch(x){fail('Could not read this file: '+(x.message||'parsing error')+'. It may be corrupt or password‑protected.')}}
+$('#useb').onclick=()=>{const t=$('#cv').innerText;if(!S.p.name.trim()&&!S.exp.length)return fail('Your built CV is empty. Fill in the builder first.');CV=t;show()};
+function show(){$('#ext').innerHTML=`<h3 style="margin-top:20px">Extracted text (check it looks right)</h3><pre>${esc(CV.slice(0,3000))}${CV.length>3000?'\n…':''}</pre><button class="btn p" id="go">Analyse CV</button>`;$('#out').innerHTML='';$('#go').onclick=run}
+const STOP=new Set('the and for with you are our will this that from your have has was were their they them his her not but all can any who what when where which would should could about into over than also more most such other some job work role team years year experience required requirements responsibilities ability strong skills including etc'.split(' '));
+const VERBS=/\b(led|managed|built|developed|designed|created|improved|increased|reduced|launched|delivered|implemented|achieved|organised|organized|analysed|analyzed|optimised|optimized|coordinated|negotiated|trained|automated|established|streamlined|drove|owned|resolved)\b/gi;
+function analyze(t,jd){const lo=t.toLowerCase(),has=r=>r.test(lo),words=(t.match(/\b\w+\b/g)||[]).length,cats=[];
+const bul=(t.match(/^\s*[•\-\*▪●–]\s*\S/gm)||[]).length,nums=(t.match(/\b\d+(\.\d+)?\s?(%|k\b|m\b|x\b|\+)|[$£€]\s?\d+/gi)||[]).length,verbs=(t.match(VERBS)||[]).length;
+const H={sum:/\b(summary|profile|objective|about me)\b/,exp:/\b(experience|employment|work history)\b/,edu:/\b(education|qualifications|academic)\b/,sk:/\b(skills|competencies|technologies)\b/,ct:/@/};
+const hs=Object.keys(H).filter(k=>has(H[k]));
+const add=(n,max,pts,ev,miss,rec)=>cats.push({n,max,s:Math.min(max,Math.round(pts)),ev,miss,rec});
+add('Structure & readability',20,hs.length*3.6+(words>=250&&words<=900?2:0),[`Sections detected: ${hs.map(k=>({sum:'summary',exp:'experience',edu:'education',sk:'skills',ct:'contact'}[k])).join(', ')||'none'}`,`${words} words`],['summary','exp','edu','sk','ct'].filter(k=>!hs.includes(k)).map(k=>'No clear '+({sum:'summary',exp:'experience',edu:'education',sk:'skills',ct:'contact'}[k])+' heading'),['Use standard section headings','Aim for roughly 300–800 words']);
+add('Work experience & achievements',25,(has(H.exp)?5:0)+Math.min(5,bul)+Math.min(8,nums*2)+Math.min(7,verbs),[`${bul} bullet lines`,`${nums} quantified results`,`${verbs} action verbs`],[nums<3?'Few measurable results':'',bul<4?'Few bullet points':'',verbs<4?'Few strong action verbs':''].filter(Boolean),['Start bullets with action verbs','Add numbers you can truthfully verify']);
+const skm=lo.match(/skills[:\s]+([^\n]+(\n[^\n]+){0,6})/);const sc=skm?skm[1].split(/[,•|;\n]/).filter(x=>x.trim().length>1).length:0;
+add('Skills relevance',20,(has(H.sk)?8:0)+Math.min(12,sc),[sc?`About ${sc} skill entries found`:'No skills list parsed'],[!has(H.sk)?'No skills section':'',sc<6?'Short skills list':''].filter(Boolean),['List role‑relevant technical and soft skills you genuinely hold','Compare with a job description below']);
+const sw=(t.match(/summary|profile|objective/i)||{index:-1}).index;add('Professional summary',10,(has(H.sum)?5:0)+(has(H.sum)&&words>150?5:0),[has(H.sum)?'Summary/profile heading found':'No summary found'],has(H.sum)?[]:['Missing professional summary'],['Write 2–4 lines on your strengths and goal']);
+add('Education & qualifications',10,(has(H.edu)?5:0)+(/\b(bachelor|master|phd|b\.?sc|m\.?sc|degree|diploma|bs|ms|bba|mba|certificate)\b/.test(lo)?5:0),[has(H.edu)?'Education heading found':'No education heading'],has(H.edu)?[]:['Education section missing'],['Include qualification, institution and dates']);
+const em=/[\w.+-]+@[\w-]+\.[\w.]+/.test(t),ph=/(\+?\d[\d\s().-]{8,})/.test(t),odd=(t.match(/[^\x00-\x7F•–—’“”£€]/g)||[]).length;
+add('ATS compatibility & formatting',15,(em?4:0)+(ph?4:0)+(words>=250&&words<=900?4:1)+(odd<10?3:0),[em?'Email found':'',ph?'Phone found':'',`${odd} unusual characters`].filter(Boolean),[!em?'No email detected':'',!ph?'No phone detected':'',odd>=10?'Many unusual characters (may be icons or tables)':''].filter(Boolean),['Keep contact details as plain text','Avoid tables, icons and text in images']);
+const total=cats.reduce((a,c)=>a+c.s,0),iss=[];
+cats.forEach(c=>c.miss.forEach(m=>iss.push({t:m,sev:c.s/c.max<.4?'Critical':c.s/c.max<.75?'Moderate':'Minor',ev:c.ev.join('; '),why:`Affects “${c.n}” (${c.s}/${c.max}).`,fix:c.rec[0]})));
+let kw=null;if(jd&&jd.trim().length>30){const f={};(jd.toLowerCase().match(/[a-z][a-z+#.\-]{2,}/g)||[]).forEach(w=>{if(!STOP.has(w))f[w]=(f[w]||0)+1});const top=Object.entries(f).sort((a,b)=>b[1]-a[1]).slice(0,25).map(x=>x[0]);
+kw={yes:top.filter(w=>lo.includes(w)),no:top.filter(w=>!lo.includes(w))}}
+return{cats,total,iss,kw}}
+function run(){$('#out').innerHTML='<p class="res"><span class="spin"></span> Analysing…</p>';setTimeout(()=>{const r=analyze(CV,$('#jd').value),T=r.total,lv=T>=90?'Strong':T>=75?'Good, with opportunities to improve':T>=60?'Needs improvement':'Significant improvements recommended';
+$('#out').innerHTML=`<div class="card res"><div class="ring"><svg width="130" height="130"><circle cx="65" cy="65" r="56" fill="none" stroke="#171D29" stroke-width="12"/><circle id="rr" cx="65" cy="65" r="56" fill="none" stroke="#FF704F" stroke-width="12" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" style="transition:stroke-dashoffset 1.2s"/></svg><span>${T}</span></div><h3 style="text-align:center">${lv}</h3><p class="small" style="text-align:center">Advisory score from rule‑based checks on the extracted text. Not an official ATS score or a hiring prediction.</p></div>
+<h3 class="res">Category breakdown</h3>${r.cats.map(c=>`<div class="card" style="margin-bottom:12px"><b>${c.n}</b> <span class="small">${c.s}/${c.max}</span><div class="bar"><i style="width:${c.s/c.max*100}%"></i></div><div class="small"><b>Evidence:</b> ${c.ev.map(esc).join('; ')||'—'}<br><b>Missing:</b> ${c.miss.map(esc).join('; ')||'Nothing flagged'}<br><b>Improve:</b> ${c.rec.map(esc).join('; ')}</div></div>`).join('')}
+<h3>Issues (${r.iss.length})</h3>${r.iss.map(i=>`<div class="card" style="margin-bottom:12px"><span class="sev ${i.sev}">${i.sev}</span> <b>${esc(i.t)}</b><div class="small">Evidence: ${esc(i.ev)}<br>Why it matters: ${esc(i.why)}<br>Suggestion: ${esc(i.fix)}</div></div>`).join('')||'<p class="small">No issues flagged by these checks.</p>'}
+${r.kw?`<h3>Job description keywords</h3><p class="small">Present in your CV text:</p>${r.kw.yes.map(w=>`<span class="pill ok">${esc(w)}</span>`).join('')||'—'}<p class="small">Absent from your CV text (add only if you genuinely have the skill):</p>${r.kw.no.map(w=>`<span class="pill no">${esc(w)}</span>`).join('')||'—'}<p class="small">Keyword matching does not guarantee ATS acceptance or an interview.</p>`:'<p class="small">Paste a job description above and re‑run to see keyword alignment.</p>'}
+<div class="row res"><a class="btn p" href="#build">Edit in builder</a></div>`;setTimeout(()=>{const e=$('#rr');if(e)e.style.strokeDashoffset=352*(1-T/100)},50)},400)}
+sync();lists();draw();route();
+</script></body></html>
